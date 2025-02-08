@@ -67,10 +67,14 @@ h2 {
     height: 95vh;
     /* 避免太長，可考慮加滾動 */
     overflow-y: auto;
-    scrollbar-width: thin;
     /* 如果條文太多，允許滾動 */
     font-size: 18px;
     line-height: 2.2;
+}
+
+.law-articles>div {
+    line-height: 1rem;
+    /* border: 1px solid #333; */
 }
 
 /* 條號（與條文內容同一區塊，避免分開） */
@@ -118,4 +122,32 @@ h2 {
 
 .law-articles::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 讓標記的文字變成黃色 */
+.highlight {
+    background-color: yellow;
+    /* padding: 2px 4px; */
+    /* border-radius: 3px; */
+    /* cursor: pointer; */
+}
+
+/* 浮動標記按鈕 */
+.popup {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.25);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.popup button {
+    background: yellow;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
 }
