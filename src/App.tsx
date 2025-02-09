@@ -59,7 +59,7 @@ const App = () => {
       setPopupPosition(null);
       return;
     }
-  
+
     // 2. 取得第一個 Range 與選取的文字（去除前後空白）
     const range = selectionObj.getRangeAt(0);
     const selectedText = range.toString().trim();
@@ -67,7 +67,7 @@ const App = () => {
       setPopupPosition(null);
       return;
     }
-  
+
     // 3. 定義一個輔助函數，根據傳入的節點取得該節點所在的高亮元素（若存在）
     const getHighlightElement = (node: Node): HTMLElement | null => {
       if (node.nodeType === Node.TEXT_NODE) {
@@ -77,48 +77,48 @@ const App = () => {
       }
       return null;
     };
-  
+
     // 4. 分別檢查 Range 的起始容器與結束容器是否位於高亮元素內
     const startHighlight = getHighlightElement(range.startContainer);
     const endHighlight = getHighlightElement(range.endContainer);
-  
+
     // 只要任一端有高亮，就視為選取區域在高亮內
     const isHighlighted = !!(startHighlight || endHighlight);
-  
+
     // 5. 取得選取範圍的邊界矩形，並計算 popup 要顯示的位置
     const rect = range.getBoundingClientRect();
     setPopupPosition({
       x: rect.left + window.scrollX,
       y: rect.top + window.scrollY - 30
     });
-  
+
     // 6. 將是否需要「反高亮」的狀態回傳到外層狀態管理（例如用於顯示相應的按鈕）
     setIsRemovingHighlight(isHighlighted);
   };
-  
+
 
   // **🔹 方法：新增標記**
   const applyHighlight = () => {
     // 1. 取得使用者的選取對象與檢查有效性
     const selectionObj = window.getSelection();
     if (!selectionObj || selectionObj.rangeCount === 0) return;
-  
+
     // 2. 從選取對象中取得第一個 Range，並取得選取文字
     const range = selectionObj.getRangeAt(0);
     const selectedText = range.toString().trim();
     if (!selectedText) return;
-  
+
     // 3. 取得選取範圍的共同祖先節點
     // 當選取範圍在單一文本節點內時，這個值可能就是那個文本節點
     const commonAncestor = range.commonAncestorContainer;
-  
+
     // 4. 建立 TreeWalker，只遍歷文本節點
     const walker = document.createTreeWalker(
       commonAncestor,
       NodeFilter.SHOW_TEXT,
       null
     );
-  
+
     // 5. 透過 TreeWalker 收集所有與選取範圍相交的文本節點
     // 注意：這裡先檢查 walker.currentNode (root) 是否需要處理
     const textNodes: Text[] = [];
@@ -133,7 +133,7 @@ const App = () => {
         textNodes.push(currentNode as Text);
       }
     }
-  
+
     // 6. 對每個收集到的文本節點進行處理：
     // 根據該節點在選取範圍中的位置，可能需要拆分文本節點
     textNodes.forEach((textNode) => {
@@ -150,7 +150,7 @@ const App = () => {
       }
       // 若沒有有效的選取範圍則跳過此節點
       if (end <= start) return;
-  
+
       // 7. 依據是否整個文本節點都在選取範圍內來處理：
       if (start === 0 && end === textNode.length) {
         // (情況一) 整個文本節點皆被選取：
@@ -179,24 +179,24 @@ const App = () => {
         selectedTextNode.parentNode?.replaceChild(span, selectedTextNode);
       }
     });
-  
+
     // 8. 清除選取狀態與重設 popup 位置（假設 setPopupPosition 已定義）
     selectionObj.removeAllRanges();
     setPopupPosition(null);
   };
-  
+
 
   // **🔹 方法：移除標記**
   const removeHighlight = () => {
     // 1. 取得使用者目前的選取狀態，若無有效 Range 則退出
     const selectionObj = window.getSelection();
     if (!selectionObj || selectionObj.rangeCount === 0) return;
-  
+
     // 2. 取得第一個 Range 與選取的文字（原始字串可能包含超出高亮區塊的部分）
     const range = selectionObj.getRangeAt(0);
     const selectedString = range.toString();
     if (!selectedString) return;
-  
+
     // 3. 根據 range 的共同祖先取得容器元素
     //    如果 commonAncestorContainer 不是 Element，則取其 parentElement
     const container: Element | null =
@@ -204,28 +204,28 @@ const App = () => {
         ? (range.commonAncestorContainer as Element)
         : (range.commonAncestorContainer.parentElement);
     if (!container) return;
-  
+
     // 4. 從容器中找出所有具有 .highlight 樣式的元素
     //    （注意：這裡會取得所有後代的高亮元素）
     let highlightEls = Array.from(container.querySelectorAll('.highlight')) as HTMLElement[];
-  
+
     // 4.1 若容器本身就是 .highlight（可能發生在單一節點選取中），也納入處理
     if (container.classList.contains('highlight')) {
       highlightEls.push(container as HTMLElement);
     }
-  
+
     // 若找不到任何高亮元素則不處理
     if (highlightEls.length === 0) return;
-  
+
     // 5. 針對每個高亮元素，檢查是否與選取範圍有交集，若有則進行反標記處理
     highlightEls.forEach((highlightEl) => {
       // 若選取範圍與該元素無交集，則略過
       if (!range.intersectsNode(highlightEl)) return;
-  
+
       // 5.1 建立一個範圍表示該高亮元素全部內容
       const hlRange = document.createRange();
       hlRange.selectNodeContents(highlightEl);
-  
+
       // 5.2 建立一個新 Range 用來表示選取範圍與高亮元素的交集
       const effectiveRange = document.createRange();
       // 交集起點：取 hlRange.start 與 selection range 的起點中「較後者」
@@ -242,10 +242,10 @@ const App = () => {
       }
       const effectiveText = effectiveRange.toString();
       if (!effectiveText) return; // 若交集文字為空則跳過
-  
+
       // 5.3 取得高亮元素內的完整文字內容
       const fullText = highlightEl.textContent || "";
-  
+
       // 5.4 如果交集文字正好等於整個高亮內容，就表示使用者選取的部分涵蓋了整個高亮區塊
       if (fullText === effectiveText) {
         // 直接以普通文字取代整個高亮元素
@@ -257,14 +257,14 @@ const App = () => {
         const startIndex = fullText.indexOf(effectiveText);
         if (startIndex === -1) return; // 理論上不會發生
         const endIndex = startIndex + effectiveText.length;
-  
+
         // 分割成三段：前段、交集部分、後段
         const beforeText = fullText.slice(0, startIndex);
         const afterText = fullText.slice(endIndex);
-  
+
         // 以 DocumentFragment 組合新節點
         const fragment = document.createDocumentFragment();
-  
+
         // 若前段有文字，重新包成高亮 span
         if (beforeText) {
           const beforeSpan = document.createElement("span");
@@ -272,10 +272,10 @@ const App = () => {
           beforeSpan.textContent = beforeText;
           fragment.appendChild(beforeSpan);
         }
-  
+
         // 將交集部分轉為普通文字節點（即取消高亮）
         fragment.appendChild(document.createTextNode(effectiveText));
-  
+
         // 若後段有文字，同樣包成高亮 span
         if (afterText) {
           const afterSpan = document.createElement("span");
@@ -283,24 +283,24 @@ const App = () => {
           afterSpan.textContent = afterText;
           fragment.appendChild(afterSpan);
         }
-  
+
         // 用組合後的新節點取代原本的高亮元素
         highlightEl.replaceWith(fragment);
       }
     });
-  
+
     // 6. 清除選取範圍，並重設 popup 位置（假設 setPopupPosition 已定義）
     selectionObj.removeAllRanges();
     setPopupPosition(null);
   };
-  
-  
-  
+
+
+
   return (
     <div className="container">
       {law ? (
         <div className="law-container">
-          <div className="law-articles" onMouseUp={handleMouseUp}>
+          <div className="law-articles" onMouseUp={handleMouseUp} onTouchEnd={handleMouseUp}>
             <span className="law-title">{law.LawName}</span>
             <p className="law-date">最後修訂日期：
               <span className="vertical-numbers">
@@ -323,9 +323,9 @@ const App = () => {
       {popupPosition && (
         <div className="popup" style={{ top: popupPosition.y, left: popupPosition.x }}>
           {isRemovingHighlight ? (
-            <button onClick={removeHighlight}>取消標記</button>
+            <button onClick={removeHighlight} onTouchEnd={removeHighlight}>取消標記</button>
           ) : (
-            <button onClick={applyHighlight}>標記</button>
+            <button onClick={applyHighlight} onTouchEnd={applyHighlight}>標記</button>
           )}
         </div>
       )}
