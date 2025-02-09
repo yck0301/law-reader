@@ -317,7 +317,7 @@ const App = () => {
             </p>
             {law.LawArticles.slice().map((article, index) => (
               <div key={index}>
-                <strong>{formatArticleNo(article.ArticleNo)}</strong>
+                <strong>{toFullWidthNumbers(article.ArticleNo)}</strong>
                 <p>{article.ArticleContent}</p>
               </div>
             ))}
