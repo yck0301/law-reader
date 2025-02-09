@@ -324,7 +324,7 @@ const App = () => {
           </div>
         </div>
       ) : (
-        <p>載入中...</p>
+        <p className="loading">載入中．．．</p>
       )}
 
       {/* 浮動標記按鈕 */}

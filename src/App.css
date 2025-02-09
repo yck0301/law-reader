@@ -14,6 +14,18 @@ body {
     padding: 0;
 }
 
+.loading {
+    width: 100dvw;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    writing-mode: var(--text-direction);
+}
+
 h1,
 h2 {
     margin: 0;
