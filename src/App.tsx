@@ -25,6 +25,14 @@ const formatArticleNo = (articleNo: string) => {
   );
 };
 
+const toFullWidthNumbers = (str: string): string => {
+  return str.split("").map(char => {
+      return char >= "0" && char <= "9"
+          ? String.fromCharCode(char.charCodeAt(0) + 0xFEE0)
+          : char;
+  }).join("");
+};
+
 const App = () => {
   const [law, setLaw] = useState<LawData | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
@@ -304,7 +312,7 @@ const App = () => {
             <span className="law-title">{law.LawName}</span>
             <p className="law-date">最後修訂日期：
               <span className="vertical-numbers">
-                {law.LawModifiedDate}
+                {toFullWidthNumbers(law.LawModifiedDate)}
               </span>
             </p>
             {law.LawArticles.slice().map((article, index) => (

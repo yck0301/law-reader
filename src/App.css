@@ -1,4 +1,9 @@
 /* 設定全局字型 */
+* {
+    --text-direction: vertical-rl;
+    /* --text-direction: horizontal-tb; */
+}
+
 html,
 body {
     font-family: "Noto Serif TC", "Songti SC", "MingLiU", "PMingLiU", serif;
@@ -18,7 +23,7 @@ h2 {
 /* 主容器 */
 .container {
     background: white;
-    padding: 10px;
+    /* padding: 10px; */
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -43,7 +48,7 @@ h2 {
 .law-title {
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin: 5px;
 }
 
 /* 修訂日期 */
@@ -55,7 +60,7 @@ h2 {
 
 /* 條文區塊（讓所有條文在一起） */
 .law-articles {
-    writing-mode: vertical-rl;
+    writing-mode: var(--text-direction);
     /* 直式書寫 */
     text-align: left;
     border: 1px solid #ccc;
@@ -63,8 +68,8 @@ h2 {
     background: #fff;
     box-sizing: border-box;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    width: 90vw;
-    height: 90vh;
+    width: 100dvw;
+    height: 100dvh;
     /* 避免太長，可考慮加滾動 */
     overflow-y: auto;
     /* 如果條文太多，允許滾動 */
@@ -104,20 +109,10 @@ h2 {
 }
 
 .vertical-numbers {
-    writing-mode: vertical-rl;
     /* 直式書寫 */
+    writing-mode: var(--text-direction);
     text-orientation: upright;
-    /* 讓數字直立排列 */
-    font-size: 18px;
 }
-
-@supports (-webkit-touch-callout: none) {
-    .vertical-numbers {
-        letter-spacing: 0.5em;
-        /* iOS 需要更大的間距 */
-    }
-}
-
 
 /* 增加滾動條的美觀性（適用於 Chrome / Edge） */
 .law-articles::-webkit-scrollbar {
